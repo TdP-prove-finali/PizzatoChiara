@@ -12,12 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="it.polito.tdp.financialportfolio.FinancialPortfolioController">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.financialportfolio.FinancialPortfolioController">
    <top>
       <Label alignment="CENTER" text="Ottimizzazione del portafoglio finanziario" textFill="#ed0707" BorderPane.alignment="CENTER">
          <font>
-            <Font name="System Bold" size="24.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Label>
    </top>
@@ -26,52 +25,51 @@
          <children>
             <Label text="Inserire i dati per calcolare il portafoglio finanziario ottimo">
                <font>
-                  <Font name="System Bold" size="18.0" />
+                  <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <HBox spacing="10.0">
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
                   <Label text="Budget:">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
                   </Label>
                   <TextField fx:id="txtBudget" />
-                  <Label text="Livello di rischio:">
+                  <Label text="Rating minimo:">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="70.0" />
+                        <Insets left="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtRisk" />
-               </children>
-            </HBox>
-            <HBox spacing="10.0">
-               <children>
-                  <Label text="Rendimento:">
+                  <ComboBox fx:id="cmbRating" />
+                  <Label text="Rendimento (percentuale):">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
                   </Label>
                   <TextField fx:id="txtReturn" />
-                  <Label text="Durata:">
-                     <padding>
-                        <Insets left="30.0" />
-                     </padding>
+                  <Label text="Durata (anni):">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtPeriod" />
+                  <TextField fx:id="txtMaturity" />
                </children>
             </HBox>
             <HBox spacing="10.0">
                <children>
                   <Label text="Obbiettivo:">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
                   </Label>
                   <ComboBox fx:id="cmbGoal" />
@@ -81,14 +79,17 @@
                <children>
                   <Button fx:id="btnSearchPortfolio" mnemonicParsing="false" onAction="#doSearchPortfolio" text="Calcola portafoglio">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
             <HBox>
                <children>
-                  <TextArea fx:id="txtResult" />
+                  <TextArea fx:id="txtResult">
+                     <font>
+                        <Font size="14.0" />
+                     </font></TextArea>
                   <PieChart />
                </children>
             </HBox>
