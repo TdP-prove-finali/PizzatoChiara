@@ -7,7 +7,9 @@ package it.polito.tdp.financialportfolio;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.financialportfolio.model.Investment;
 import it.polito.tdp.financialportfolio.model.Model;
+import it.polito.tdp.financialportfolio.model.Portfolio;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -108,7 +110,19 @@ public class FinancialPortfolioController {
     		this.txtResult.setText("Errore: selezionare un valore nella combo box Obbiettivo.");
     		return;
     	}
-
+    	
+    	//data input
+    	int budget=Integer.parseInt(this.txtBudget.getText().trim());
+    	String minRating=this.cmbRating.getValue();
+    	float rendimento=Float.parseFloat(this.txtReturn.getText().trim());
+    	int durata=Integer.parseInt(this.txtMaturity.getText().trim());    	
+    	String obbiettivo=this.cmbGoal.getValue();
+    	Portfolio optimalPortfolio=model.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo);
+    	this.txtResult.clear();
+    	this.txtResult.setText("Portafoglio ottimo relativo ai dati input dell'utente:\n");
+    	for(Investment i : optimalPortfolio.getInvestments()) {
+    		this.txtResult.appendText(i.toString()+"\n");
+    	}
     }
     
     public void setModel(Model model) {
