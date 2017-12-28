@@ -4,9 +4,9 @@ public class Investment {
 	
 	private int codice;
 	private Bond bond;
-	private float amount;
+	private double amount;
 
-	public Investment(int codice, Bond bond, float amount) {
+	public Investment(int codice, Bond bond, double amount) {
 		super();
 		this.codice = codice;
 		this.bond = bond;
@@ -29,11 +29,11 @@ public class Investment {
 		this.bond = bond;
 	}
 
-	public float getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 

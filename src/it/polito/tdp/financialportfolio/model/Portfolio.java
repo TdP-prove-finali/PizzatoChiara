@@ -1,7 +1,5 @@
 package it.polito.tdp.financialportfolio.model;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +15,7 @@ public class Portfolio {
 	public float getTotAmountBond(Investment itemp) {
 		float amount=0;
 		for(Investment i : investments) {
-			if(i.equals(itemp)) {
+			if(i.getBond().equals(itemp.getBond())) {
 				amount+=i.getAmount();	
 			}
 		}
@@ -27,15 +25,16 @@ public class Portfolio {
 	public float getTotAmountInvested() {
 		float amount=0;
 		for(Investment i : investments) {
-			amount+=i.getAmount();
+			amount+=i.getAmount()*(i.getBond().getPrice()/100);
 		}
 		return amount;
 	}
 	
-	public float getTotEarning() {
+	public float getTotEarning(int durata) {
 		float earning=0;
 		for(Investment i : investments) {
-			earning+=i.getAmount()*i.getBond().getYield()*LocalDate.now().until(i.getBond().getMaturity(),ChronoUnit.YEARS);
+//			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(LocalDate.now().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
+			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*durata+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
 		}
 		return earning;
 	}
@@ -67,10 +66,10 @@ public class Portfolio {
 	}
 	
 	public int getTotRisk() {
+		//TODO trovare modo per calcolare correttamente il rischio ipotizzando coefficiente di correlazione pari a zero
 		int risk=0;
 		for(Investment i : investments) {
-			//TODO
-			//calcolo rischio portafoglio
+			risk+=(i.getAmount()/1000)*(20-i.getBond().getMoodys_rating());
 		}
 		return risk;
 	}

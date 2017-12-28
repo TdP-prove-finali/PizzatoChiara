@@ -112,17 +112,35 @@ public class FinancialPortfolioController {
     	}
     	
     	//data input
-    	int budget=Integer.parseInt(this.txtBudget.getText().trim());
-    	String minRating=this.cmbRating.getValue();
+    	double budget=Double.parseDouble(this.txtBudget.getText().trim());
+    	String minRatingString=this.cmbRating.getValue();
+    	int minRating=model.getValueRating(minRatingString);
     	float rendimento=Float.parseFloat(this.txtReturn.getText().trim());
     	int durata=Integer.parseInt(this.txtMaturity.getText().trim());    	
     	String obbiettivo=this.cmbGoal.getValue();
     	Portfolio optimalPortfolio=model.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo);
+    	Portfolio result=new Portfolio();
+    	for(Investment i : optimalPortfolio.getInvestments()) {
+    		int k=0;
+    		for(k=0; k<result.getInvestments().size(); k++) {
+    			if(result.getInvestments().get(k).getBond().equals(i.getBond())) {
+    				break;
+    			}
+    		}
+    		if(k==result.getInvestments().size()) {
+    			result.addInvestment(i);
+    		}
+    		else {
+    			result.getInvestments().get(k).setAmount(result.getInvestments().get(k).getAmount()+i.getAmount());
+    		}
+    	}
     	this.txtResult.clear();
     	this.txtResult.setText("Portafoglio ottimo relativo ai dati input dell'utente:\n");
-    	for(Investment i : optimalPortfolio.getInvestments()) {
+    	for(Investment i : result.getInvestments()) {
     		this.txtResult.appendText(i.toString()+"\n");
     	}
+    	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested())+"\n");
+		this.txtResult.appendText("Resa nel periodo: "+result.getTotEarning(durata));
     }
     
     public void setModel(Model model) {

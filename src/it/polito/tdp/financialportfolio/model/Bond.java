@@ -10,12 +10,12 @@ public class Bond {
 	private String sub_product_type;
 	private float coupon;
 	private LocalDate maturity;
-	private String moodys_rating;
+	private int moodys_rating;
 	private float price;
 	private float yield;
 	
 	public Bond(String issuer_name, String symbol, String callable, String sub_product_type, float coupon,
-			LocalDate maturity, String moodys_rating, float price, float yield) {
+			LocalDate maturity, int moodys_rating, float price, float yield) {
 		super();
 		this.issuer_name = issuer_name;
 		this.symbol = symbol;
@@ -76,11 +76,11 @@ public class Bond {
 		this.maturity = maturity;
 	}
 
-	public String getMoodys_rating() {
+	public int getMoodys_rating() {
 		return moodys_rating;
 	}
 
-	public void setMoodys_rating(String moodys_rating) {
+	public void setMoodys_rating(int moodys_rating) {
 		this.moodys_rating = moodys_rating;
 	}
 
