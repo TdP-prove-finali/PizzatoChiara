@@ -1,16 +1,20 @@
 package it.polito.tdp.financialportfolio.model;
 
+import java.time.LocalDate;
+
 public class Investment {
 	
 	private int codice;
 	private Bond bond;
 	private double amount;
+	private LocalDate date;
 
-	public Investment(int codice, Bond bond, double amount) {
+	public Investment(int codice, Bond bond, double amount, LocalDate date) {
 		super();
 		this.codice = codice;
 		this.bond = bond;
 		this.amount = amount;
+		this.date=date;
 	}
 
 	public int getCodice() {
@@ -37,6 +41,14 @@ public class Investment {
 		this.amount = amount;
 	}
 
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -60,7 +72,7 @@ public class Investment {
 	}
 	
 	public String toString() {
-		return this.codice+" "+this.bond.toString()+" "+this.amount;
+		return this.codice+" "+this.date+" "+this.bond.toString()+" "+this.amount;
 	}
 
 }

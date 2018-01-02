@@ -5,6 +5,7 @@
 package it.polito.tdp.financialportfolio;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -130,7 +131,8 @@ public class FinancialPortfolioController {
     	float rendimento=Float.parseFloat(this.txtReturn.getText().trim());
     	int durata=Integer.parseInt(this.txtMaturity.getText().trim());    	
     	String obbiettivo=this.cmbGoal.getValue();
-    	Portfolio optimalPortfolio=model.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo);
+//    	Portfolio optimalPortfolio=model.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo, LocalDate.now());
+    	Portfolio optimalPortfolio=model.searchPortfolioPlus(budget, minRating, rendimento, durata, obbiettivo, LocalDate.now());
     	Portfolio result=new Portfolio();
     	for(Investment i : optimalPortfolio.getInvestments()) {
     		int k=0;
@@ -151,23 +153,23 @@ public class FinancialPortfolioController {
     	for(Investment i : result.getInvestments()) {
     		this.txtResult.appendText(i.toString()+"\n");
     	}
-    	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested())+"\n");
+    	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested(LocalDate.now()))+"\n");
 		this.txtResult.appendText("Resa nel periodo: "+result.getTotEarning(durata));
-		//Pie Chart type
-		List<StatisticType> ltemp=model.getPieChartType(budget);
-		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-		for(StatisticType l : ltemp) {
-			pieChartData.add(new PieChart.Data(l.getType(), l.getAmount()));
-		}
-		this.pieChartType.setData(pieChartData);
-		
-		//Pie Chart rating
-		List<StatisticRating> rtemp=model.getPieChartRating(budget);
-		ObservableList<PieChart.Data> pieChartDataRating = FXCollections.observableArrayList();
-		for(StatisticRating r : rtemp) {
-			pieChartDataRating.add(new PieChart.Data(r.getRating(), r.getAmount()));
-		}
-		this.pieChartRating.setData(pieChartDataRating);
+//		//Pie Chart type
+//		List<StatisticType> ltemp=model.getPieChartType(budget);
+//		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+//		for(StatisticType l : ltemp) {
+//			pieChartData.add(new PieChart.Data(l.getType(), l.getAmount()));
+//		}
+//		this.pieChartType.setData(pieChartData);
+//		
+//		//Pie Chart rating
+//		List<StatisticRating> rtemp=model.getPieChartRating(budget);
+//		ObservableList<PieChart.Data> pieChartDataRating = FXCollections.observableArrayList();
+//		for(StatisticRating r : rtemp) {
+//			pieChartDataRating.add(new PieChart.Data(r.getRating(), r.getAmount()));
+//		}
+//		this.pieChartRating.setData(pieChartDataRating);
     }
     
     public void setModel(Model model) {

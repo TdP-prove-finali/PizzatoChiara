@@ -14,20 +14,24 @@ public class Portfolio {
 		this.investments = new ArrayList<>();
 	}
 	
-	public float getTotAmountBond(Investment itemp) {
+	public float getTotAmountBond(Investment itemp, LocalDate data) {
 		float amount=0;
 		for(Investment i : investments) {
 			if(i.getBond().equals(itemp.getBond())) {
-				amount+=i.getAmount();	
+				if((i.getDate().isBefore(data) || i.getDate().isEqual(data)) && (i.getBond().getMaturity().isAfter(data) || i.getBond().getMaturity().isEqual(data))){
+					amount+=i.getAmount();	
+				}
 			}
 		}
 		return amount;
 	}
 
-	public float getTotAmountInvested() {
+	public float getTotAmountInvested(LocalDate data) {
 		float amount=0;
 		for(Investment i : investments) {
-			amount+=i.getAmount()*(i.getBond().getPrice()/100);
+			if((i.getDate().isBefore(data) || i.getDate().isEqual(data)) && (i.getBond().getMaturity().isAfter(data) || i.getBond().getMaturity().isEqual(data))){
+				amount+=i.getAmount()*(i.getBond().getPrice()/100);
+			}
 		}
 		return amount;
 	}
@@ -35,7 +39,7 @@ public class Portfolio {
 	public float getTotEarning(int durata) {
 		float earning=0;
 		for(Investment i : investments) {
-			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(LocalDate.now().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
+			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(i.getDate().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
 //			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*durata+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
 		}
 		return earning;
