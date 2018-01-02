@@ -20,7 +20,10 @@
          </font>
       </Label>
    </top>
-   <center>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <left>
       <VBox spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <Label text="Inserire i dati per calcolare il portafoglio finanziario ottimo">
@@ -86,11 +89,34 @@
             </HBox>
             <HBox>
                <children>
-                  <TextArea fx:id="txtResult">
+                  <Label text="La simulazione considera un tasso nullo per le durate successive alla scadenza titolo e per la componente di liquidità non investibile in quanto inferiore al taglio minimo.">
                      <font>
                         <Font size="14.0" />
-                     </font></TextArea>
-                  <PieChart />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <VBox>
+                     <children>
+                        <TextArea fx:id="txtResult">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextArea>
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <PieChart fx:id="pieChartType" maxHeight="200.0" maxWidth="200.0" />
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <PieChart fx:id="pieChartRating" maxHeight="200.0" maxWidth="200.0" />
+                     </children>
+                  </VBox>
                </children>
             </HBox>
          </children>
@@ -101,8 +127,5 @@
             <Insets top="10.0" />
          </padding>
       </VBox>
-   </center>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+   </left>
 </BorderPane>

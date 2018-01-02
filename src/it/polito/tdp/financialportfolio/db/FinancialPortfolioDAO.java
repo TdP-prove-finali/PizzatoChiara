@@ -75,5 +75,28 @@ public class FinancialPortfolioDAO {
 			return -1;
 		}
 	}
+	
+	public String getRatingOfValue(int value){
+		String sql="SELECT rating " + 
+				   "FROM moodys_rating " + 
+				   "WHERE value=? ";
+		String result="";
+		Connection conn=DBConnect.getConnection();
+		try{
+			PreparedStatement st=conn.prepareStatement(sql);
+			st.setInt(1, value);
+			ResultSet res=st.executeQuery();
+			while(res.next()){
+				result=res.getString("rating");
+			}
+			st.close();
+			conn.close();
+			return result;
+		} catch (SQLException e){
+			//TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }

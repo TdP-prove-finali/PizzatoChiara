@@ -2,6 +2,7 @@ package it.polito.tdp.financialportfolio.model;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.tdp.financialportfolio.db.FinancialPortfolioDAO;
@@ -30,6 +31,48 @@ public class Model {
 		return ratings;
 	}
 	
+	public List<StatisticType> getPieChartType(double budget){
+		List<StatisticType> result=new LinkedList<>();
+		for(Investment i : optimalSolution.getInvestments()) {
+			int k=0;
+			for(k=0; k<result.size(); k++) {
+				if(result.get(k).getType().equals(i.getBond().getSub_product_type())) {
+					break;
+				}
+			}
+			if(k==result.size()) {
+				StatisticType stemp=new StatisticType(i.getBond().getSub_product_type(),i.getBond().getPrice()*i.getAmount());
+				result.add(stemp);
+			}
+			else {
+				result.get(k).setAmount(result.get(k).getAmount()+i.getBond().getPrice()*i.getAmount());
+			}
+		}
+		result.add(new StatisticType("Liquidità", (budget-optimalSolution.getTotAmountInvested())));
+		return result;	
+	}
+	
+	public List<StatisticRating> getPieChartRating(double budget){
+		List<StatisticRating> result=new LinkedList<>();
+		for(Investment i : optimalSolution.getInvestments()) {
+			int k=0;
+			for(k=0; k<result.size(); k++) {
+				if(result.get(k).getRating().equals(this.getRatingOfValue(i.getBond().getMoodys_rating()))) {
+					break;
+				}
+			}
+			if(k==result.size()) {
+				StatisticRating stemp=new StatisticRating(this.getRatingOfValue(i.getBond().getMoodys_rating()),i.getBond().getPrice()*i.getAmount());
+				result.add(stemp);
+			}
+			else {
+				result.get(k).setAmount(result.get(k).getAmount()+i.getBond().getPrice()*i.getAmount());
+			}
+		}
+		result.add(new StatisticRating("Liquidità", (budget-optimalSolution.getTotAmountInvested())));
+		return result;	
+	}
+	
 	public List<Bond> getBonds(){
 		if(bonds==null) {
 			bonds=fpdao.listBonds();
@@ -39,6 +82,10 @@ public class Model {
 	
 	public int getValueRating(String moodys_rating) {
 		return fpdao.getValueRating(moodys_rating);
+	}
+	
+	public String getRatingOfValue(int value) {
+		return fpdao.getRatingOfValue(value);
 	}
 	
 	public Portfolio searchPortfolio(double budget, int minRating, float rendimento, int durata, String obbiettivo) {

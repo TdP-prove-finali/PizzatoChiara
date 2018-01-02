@@ -5,13 +5,19 @@
 package it.polito.tdp.financialportfolio;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.financialportfolio.model.Investment;
 import it.polito.tdp.financialportfolio.model.Model;
 import it.polito.tdp.financialportfolio.model.Portfolio;
+import it.polito.tdp.financialportfolio.model.StatisticRating;
+import it.polito.tdp.financialportfolio.model.StatisticType;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -47,6 +53,12 @@ public class FinancialPortfolioController {
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="pieChartType"
+    private PieChart pieChartType; // Value injected by FXMLLoader
+
+    @FXML // fx:id="pieChartRating"
+    private PieChart pieChartRating; // Value injected by FXMLLoader
 
     @FXML
     void doSearchPortfolio(ActionEvent event) {
@@ -141,6 +153,21 @@ public class FinancialPortfolioController {
     	}
     	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested())+"\n");
 		this.txtResult.appendText("Resa nel periodo: "+result.getTotEarning(durata));
+		//Pie Chart type
+		List<StatisticType> ltemp=model.getPieChartType(budget);
+		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+		for(StatisticType l : ltemp) {
+			pieChartData.add(new PieChart.Data(l.getType(), l.getAmount()));
+		}
+		this.pieChartType.setData(pieChartData);
+		
+		//Pie Chart rating
+		List<StatisticRating> rtemp=model.getPieChartRating(budget);
+		ObservableList<PieChart.Data> pieChartDataRating = FXCollections.observableArrayList();
+		for(StatisticRating r : rtemp) {
+			pieChartDataRating.add(new PieChart.Data(r.getRating(), r.getAmount()));
+		}
+		this.pieChartRating.setData(pieChartDataRating);
     }
     
     public void setModel(Model model) {
@@ -163,6 +190,8 @@ public class FinancialPortfolioController {
         assert cmbGoal != null : "fx:id=\"cmbGoal\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert btnSearchPortfolio != null : "fx:id=\"btnSearchPortfolio\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
+        assert pieChartType != null : "fx:id=\"pieChartType\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
+        assert pieChartRating != null : "fx:id=\"pieChartRating\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
 
     }
 }

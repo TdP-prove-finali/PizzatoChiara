@@ -1,5 +1,7 @@
 package it.polito.tdp.financialportfolio.model;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +35,8 @@ public class Portfolio {
 	public float getTotEarning(int durata) {
 		float earning=0;
 		for(Investment i : investments) {
-//			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(LocalDate.now().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
-			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*durata+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
+			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(LocalDate.now().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
+//			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*durata+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
 		}
 		return earning;
 	}
