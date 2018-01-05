@@ -31,6 +31,11 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
+            <Label text="La simulazione considera un pagamento cedole mensile investendo liquidità residua e cedole maturate in nuovi titoli mensilmente.">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
                   <Label text="Budget:">
@@ -87,24 +92,35 @@
                   </Button>
                </children>
             </HBox>
-            <HBox>
+            <TextArea fx:id="txtResult" prefHeight="39.0" prefWidth="1020.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextArea>
+            <HBox spacing="10.0">
                <children>
-                  <Label text="La simulazione considera un tasso nullo per le durate successive alla scadenza titolo e per la componente di liquidità non investibile in quanto inferiore al taglio minimo.">
+                  <Label text="Selezionare una data per visualizzare la composizione del portafoglio">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
+                  <ComboBox fx:id="cmbDate" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_RIGHT">
+               <children>
+                  <Button fx:id="btnPortfolio" mnemonicParsing="false" onAction="#doPortfolio" text="Composizione portafoglio">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                </children>
             </HBox>
             <HBox>
                <children>
                   <VBox>
                      <children>
-                        <TextArea fx:id="txtResult">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </TextArea>
+                        <TextArea fx:id="txtResultComposition" />
                      </children>
                   </VBox>
                   <VBox>

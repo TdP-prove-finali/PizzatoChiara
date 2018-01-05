@@ -55,6 +55,15 @@ public class FinancialPortfolioController {
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
     
+    @FXML // fx:id="cmbdate"
+    private ComboBox<LocalDate> cmbDate; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="btnPortfolio"
+    private Button btnPortfolio; // Value injected by FXMLLoader
+
+    @FXML // fx:id="txtResultComposition"
+    private TextArea txtResultComposition; // Value injected by FXMLLoader
+    
     @FXML // fx:id="pieChartType"
     private PieChart pieChartType; // Value injected by FXMLLoader
 
@@ -133,28 +142,30 @@ public class FinancialPortfolioController {
     	String obbiettivo=this.cmbGoal.getValue();
 //    	Portfolio optimalPortfolio=model.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo, LocalDate.now());
     	Portfolio optimalPortfolio=model.searchPortfolioPlus(budget, minRating, rendimento, durata, obbiettivo, LocalDate.now());
-    	Portfolio result=new Portfolio();
-    	for(Investment i : optimalPortfolio.getInvestments()) {
-    		int k=0;
-    		for(k=0; k<result.getInvestments().size(); k++) {
-    			if(result.getInvestments().get(k).getBond().equals(i.getBond())) {
-    				break;
-    			}
-    		}
-    		if(k==result.getInvestments().size()) {
-    			result.addInvestment(i);
-    		}
-    		else {
-    			result.getInvestments().get(k).setAmount(result.getInvestments().get(k).getAmount()+i.getAmount());
-    		}
-    	}
+//    	Portfolio result=new Portfolio();
+//    	for(Investment i : optimalPortfolio.getInvestments()) {
+//    		int k=0;
+//    		for(k=0; k<result.getInvestments().size(); k++) {
+//    			if(result.getInvestments().get(k).getBond().equals(i.getBond())) {
+//    				break;
+//    			}
+//    		}
+//    		if(k==result.getInvestments().size()) {
+//    			result.addInvestment(i);
+//    		}
+//    		else {
+//    			result.getInvestments().get(k).setAmount(result.getInvestments().get(k).getAmount()+i.getAmount());
+//    		}
+//    	}
     	this.txtResult.clear();
-    	this.txtResult.setText("Portafoglio ottimo relativo ai dati input dell'utente:\n");
-    	for(Investment i : result.getInvestments()) {
-    		this.txtResult.appendText(i.toString()+"\n");
-    	}
-    	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested(LocalDate.now()))+"\n");
-		this.txtResult.appendText("Resa nel periodo: "+result.getTotEarning(durata));
+    	this.txtResult.setText("Il portafoglio ottimo relativo ai dati input dell'utente a termine periodo ha un valore pari a "+(int)(optimalPortfolio.getTotEarning(durata)+budget)+".");
+    	this.cmbDate.getItems().clear();
+    	this.cmbDate.getItems().addAll(model.getDates(durata));
+//    	for(Investment i : result.getInvestments()) {
+//    		this.txtResult.appendText(i.toString()+"\n");
+//    	}
+//    	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested(LocalDate.now()))+"\n");
+//		this.txtResult.appendText("Resa nel periodo: "+result.getTotEarning(durata));
 //		//Pie Chart type
 //		List<StatisticType> ltemp=model.getPieChartType(budget);
 //		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
@@ -170,6 +181,12 @@ public class FinancialPortfolioController {
 //			pieChartDataRating.add(new PieChart.Data(r.getRating(), r.getAmount()));
 //		}
 //		this.pieChartRating.setData(pieChartDataRating);
+    }
+    
+    @FXML
+    void doPortfolio(ActionEvent event) {
+    	
+
     }
     
     public void setModel(Model model) {
@@ -192,6 +209,9 @@ public class FinancialPortfolioController {
         assert cmbGoal != null : "fx:id=\"cmbGoal\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert btnSearchPortfolio != null : "fx:id=\"btnSearchPortfolio\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
+        assert cmbDate != null : "fx:id=\"cmbdate\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
+        assert btnPortfolio != null : "fx:id=\"btnPortfolio\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
+        assert txtResultComposition != null : "fx:id=\"txtResultComposition\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert pieChartType != null : "fx:id=\"pieChartType\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert pieChartRating != null : "fx:id=\"pieChartRating\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
 

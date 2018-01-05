@@ -14,10 +14,10 @@ public class Portfolio {
 		this.investments = new ArrayList<>();
 	}
 	
-	public float getTotAmountBond(Investment itemp, LocalDate data) {
+	public float getTotAmountBond(Bond itemp, LocalDate data) {
 		float amount=0;
 		for(Investment i : investments) {
-			if(i.getBond().equals(itemp.getBond())) {
+			if(i.getBond().equals(itemp)) {
 				if((i.getDate().isBefore(data) || i.getDate().isEqual(data)) && (i.getBond().getMaturity().isAfter(data) || i.getBond().getMaturity().isEqual(data))){
 					amount+=i.getAmount();	
 				}
