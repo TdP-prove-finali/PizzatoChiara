@@ -71,8 +71,9 @@ public class Investment {
 		return true;
 	}
 	
+	@Override
 	public String toString() {
-		return this.codice+" "+this.date+" "+this.bond.toString()+" "+this.amount;
+		return this.date+" "+this.bond.toString()+" "+this.amount;
 	}
 
 }

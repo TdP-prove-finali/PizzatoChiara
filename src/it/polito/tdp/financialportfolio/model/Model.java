@@ -2,9 +2,10 @@ package it.polito.tdp.financialportfolio.model;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-
 import it.polito.tdp.financialportfolio.db.FinancialPortfolioDAO;
 
 public class Model {
@@ -16,7 +17,6 @@ public class Model {
 	private final static double MAX_SINGLE_INVESTMENT = 0.5;
 	private final static double MIN_SINGLE_INVESTMENT = 0.25;
 	private int codiceInvestment;
-
 	private Portfolio optimalSolution;
 	private Portfolio optimalSolutionPlus;
 	private double liquidity;
@@ -43,47 +43,89 @@ public class Model {
 		return result;
 	}
 	
-//	public List<StatisticType> getPieChartType(double budget){
-//		List<StatisticType> result=new LinkedList<>();
-//		for(Investment i : optimalSolution.getInvestments()) {
-//			int k=0;
-//			for(k=0; k<result.size(); k++) {
-//				if(result.get(k).getType().equals(i.getBond().getSub_product_type())) {
-//					break;
-//				}
-//			}
-//			if(k==result.size()) {
-//				StatisticType stemp=new StatisticType(i.getBond().getSub_product_type(),i.getBond().getPrice()*i.getAmount());
-//				result.add(stemp);
-//			}
-//			else {
-//				result.get(k).setAmount(result.get(k).getAmount()+i.getBond().getPrice()*i.getAmount());
-//			}
-//		}
-//		result.add(new StatisticType("Liquidità", (budget-optimalSolution.getTotAmountInvested())));
-//		return result;	
-//	}
-//	
-//	public List<StatisticRating> getPieChartRating(double budget){
-//		List<StatisticRating> result=new LinkedList<>();
-//		for(Investment i : optimalSolution.getInvestments()) {
-//			int k=0;
-//			for(k=0; k<result.size(); k++) {
-//				if(result.get(k).getRating().equals(this.getRatingOfValue(i.getBond().getMoodys_rating()))) {
-//					break;
-//				}
-//			}
-//			if(k==result.size()) {
-//				StatisticRating stemp=new StatisticRating(this.getRatingOfValue(i.getBond().getMoodys_rating()),i.getBond().getPrice()*i.getAmount());
-//				result.add(stemp);
-//			}
-//			else {
-//				result.get(k).setAmount(result.get(k).getAmount()+i.getBond().getPrice()*i.getAmount());
-//			}
-//		}
-//		result.add(new StatisticRating("Liquidità", (budget-optimalSolution.getTotAmountInvested())));
-//		return result;	
-//	}
+	public List<StatisticType> getPieChartType(double budget, LocalDate l){
+		List<StatisticType> result=new LinkedList<>();
+		List<Investment> res=new LinkedList<>();
+		List<Investment> ptemp=new LinkedList<>();
+		//select Investment in the period 
+		int k=0;
+		for(k=0; k<optimalSolutionPlus.getInvestments().size(); k++) {
+			if((optimalSolutionPlus.getInvestments().get(k).getDate().isBefore(l) || optimalSolutionPlus.getInvestments().get(k).getDate().isEqual(l)) && (optimalSolutionPlus.getInvestments().get(k).getBond().getMaturity().isAfter(l) || optimalSolutionPlus.getInvestments().get(k).getBond().getMaturity().isEqual(l))) {
+				ptemp.add(optimalSolutionPlus.getInvestments().get(k));
+			}
+		}
+		//aggregate Investment with the same date and on the same bond
+    	for(Investment i : ptemp) {
+    		for(k=0; k<res.size(); k++) {
+    			if(res.get(k).getBond().equals(i.getBond()) && res.get(k).getDate().equals(i.getDate()) && !(res.get(k).equals(i))) {
+    				break;
+    			}
+    		}
+    		if(k==res.size()) {
+    			res.add(i);
+    		}
+    		else {
+    			res.get(k).setAmount(res.get(k).getAmount()+i.getAmount());
+    		}
+    	}
+		for(Investment i : res) {
+			for(k=0; k<result.size(); k++) {
+				if(result.get(k).getType().equals(i.getBond().getSub_product_type())) {
+					break;
+				}
+			}
+			if(k==result.size()) {
+				StatisticType stemp=new StatisticType(i.getBond().getSub_product_type(),i.getBond().getPrice()*i.getAmount());
+				result.add(stemp);
+			}
+			else {
+				result.get(k).setAmount(result.get(k).getAmount()+i.getBond().getPrice()*i.getAmount());
+			}
+		}
+		return result;	
+	}
+	
+	public List<StatisticRating> getPieChartRating(double budget, LocalDate l){
+		List<StatisticRating> result=new LinkedList<>();
+		List<Investment> res=new LinkedList<>();
+		List<Investment> ptemp=new LinkedList<>();
+		//select Investment in the period 
+		int k=0;
+		for(k=0; k<optimalSolutionPlus.getInvestments().size(); k++) {
+			if((optimalSolutionPlus.getInvestments().get(k).getDate().isBefore(l) || optimalSolutionPlus.getInvestments().get(k).getDate().isEqual(l)) && (optimalSolutionPlus.getInvestments().get(k).getBond().getMaturity().isAfter(l) || optimalSolutionPlus.getInvestments().get(k).getBond().getMaturity().isEqual(l))) {
+				ptemp.add(optimalSolutionPlus.getInvestments().get(k));
+			}
+		}
+		//aggregate Investment with the same date and on the same bond
+    	for(Investment i : ptemp) {
+    		for(k=0; k<res.size(); k++) {
+    			if(res.get(k).getBond().equals(i.getBond()) && res.get(k).getDate().equals(i.getDate()) && !(res.get(k).equals(i))) {
+    				break;
+    			}
+    		}
+    		if(k==res.size()) {
+    			res.add(i);
+    		}
+    		else {
+    			res.get(k).setAmount(res.get(k).getAmount()+i.getAmount());
+    		}
+    	}
+		for(Investment i : res) {
+			for(k=0; k<result.size(); k++) {
+				if(result.get(k).getRating().equals(this.getRatingOfValue(i.getBond().getMoodys_rating()))) {
+					break;
+				}
+			}
+			if(k==result.size()) {
+				StatisticRating stemp=new StatisticRating(this.getRatingOfValue(i.getBond().getMoodys_rating()),i.getBond().getPrice()*i.getAmount());
+				result.add(stemp);
+			}
+			else {
+				result.get(k).setAmount(result.get(k).getAmount()+i.getBond().getPrice()*i.getAmount());
+			}
+		}
+		return result;	
+	}
 	
 	public List<Bond> getBonds(){
 		if(bonds==null) {
@@ -114,13 +156,13 @@ public class Model {
 			return optimalSolution;
 		}
 		Portfolio partialSolution=new Portfolio();
-		System.out.print("ENTRO nel for con taglio minimo "+MIN_INVESTMENT_AMOUNT+" "+budget+"\n");
+//		System.out.print("ENTRO nel for con taglio minimo "+MIN_INVESTMENT_AMOUNT+" "+budget+"\n");
 		for(Bond b : this.getBonds()) {
 			//TODO check YEARS
 			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getMoodys_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
 				Investment itemp=new Investment(codiceInvestment++,b,MIN_INVESTMENT_AMOUNT, data);
 				partialSolution.addInvestment(itemp);
-				System.out.print("PRIMA DI REcursive "+budget+" "+partialSolution.getTotAmountInvested(data)+" "+itemp.getAmount()+" "+itemp.getBond().getMaturity()+"\n");
+//				System.out.print("PRIMA DI REcursive "+budget+" "+partialSolution.getTotAmountInvested(data)+" "+itemp.getAmount()+" "+itemp.getBond().getMaturity()+"\n");
 				recursive(1, partialSolution, budget, minRating, rendimento, durata, obbiettivo, data);
 				partialSolution.removeInvestment(itemp);
 			}
@@ -175,8 +217,10 @@ public class Model {
 //					System.out.print("IF "+amount+" "+l+"\n");
 				}
 				else {
-					amount+=itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(1)).until(l,ChronoUnit.DAYS))/365;
-//					System.out.print("ELSE "+amount+" "+l+" "+itemp.getBond().getCoupon()+" "+itemp.getAmount()+" "+((l.minusMonths(1)).until(l,ChronoUnit.DAYS))+" "+itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(1)).until(l,ChronoUnit.DAYS))/365+"\n");
+					if(itemp.getBond().getMaturity().isAfter(l)) {
+						amount+=itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(1)).until(l,ChronoUnit.DAYS))/365;
+//						System.out.print("ELSE "+amount+" "+l+" "+itemp.getBond().getCoupon()+" "+itemp.getAmount()+" "+((l.minusMonths(1)).until(l,ChronoUnit.DAYS))+" "+itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(1)).until(l,ChronoUnit.DAYS))/365+"\n");
+					}
 				}
 			}
 			System.out.print("CICLO in PortfolioPlus da investire: "+amount+" "+l+"\n");
@@ -258,6 +302,43 @@ public class Model {
 				}				
 			}
 		}
+	}
+	
+	public String getPortfolioComposition(LocalDate l) {
+		String result="";
+		List<Investment> res=new LinkedList<>();
+		List<Investment> ptemp=new LinkedList<>();
+		//select Investment in the period 
+		int k=0;
+		for(k=0; k<optimalSolutionPlus.getInvestments().size(); k++) {
+			if((optimalSolutionPlus.getInvestments().get(k).getDate().isBefore(l) || optimalSolutionPlus.getInvestments().get(k).getDate().isEqual(l)) && (optimalSolutionPlus.getInvestments().get(k).getBond().getMaturity().isAfter(l) || optimalSolutionPlus.getInvestments().get(k).getBond().getMaturity().isEqual(l))) {
+				ptemp.add(optimalSolutionPlus.getInvestments().get(k));
+			}
+		}
+		//aggregate Investment with the same date and on the same bond
+    	for(Investment i : ptemp) {
+    		for(k=0; k<res.size(); k++) {
+    			if(res.get(k).getBond().equals(i.getBond()) && res.get(k).getDate().equals(i.getDate()) && !(res.get(k).equals(i))) {
+    				break;
+    			}
+    		}
+    		if(k==res.size()) {
+    			res.add(i);
+    		}
+    		else {
+    			res.get(k).setAmount(res.get(k).getAmount()+i.getAmount());
+    		}
+    	}		
+		//order list for date
+		Collections.sort(res, new Comparator<Investment>(){
+			public int compare(Investment t1, Investment t2){
+				return t1.getDate().compareTo(t2.getDate());
+			}
+		});
+		for(Investment i : res) {
+			result+=i+"\n";
+		}
+		return result;
 	}
 	
 }

@@ -51,5 +51,10 @@ public class StatisticRating {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return this.rating+" "+this.amount;
+	}
 
 }

@@ -51,5 +51,10 @@ public class StatisticType {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return this.type+" "+this.amount;
+	}
 
 }

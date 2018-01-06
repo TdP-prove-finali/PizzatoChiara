@@ -8,8 +8,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import it.polito.tdp.financialportfolio.model.Investment;
 import it.polito.tdp.financialportfolio.model.Model;
 import it.polito.tdp.financialportfolio.model.Portfolio;
 import it.polito.tdp.financialportfolio.model.StatisticRating;
@@ -21,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -45,6 +44,9 @@ public class FinancialPortfolioController {
 
     @FXML // fx:id="txtMaturity"
     private TextField txtMaturity; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="txtLabel"
+    private Label txtLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbGoal"
     private ComboBox<String> cmbGoal; // Value injected by FXMLLoader
@@ -137,55 +139,67 @@ public class FinancialPortfolioController {
     	double budget=Double.parseDouble(this.txtBudget.getText().trim());
     	String minRatingString=this.cmbRating.getValue();
     	int minRating=model.getValueRating(minRatingString);
-    	float rendimento=Float.parseFloat(this.txtReturn.getText().trim());
+    	float rendimento=Float.parseFloat(this.txtReturn.getText().trim().replace(',', '.'));
     	int durata=Integer.parseInt(this.txtMaturity.getText().trim());    	
     	String obbiettivo=this.cmbGoal.getValue();
-//    	Portfolio optimalPortfolio=model.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo, LocalDate.now());
     	Portfolio optimalPortfolio=model.searchPortfolioPlus(budget, minRating, rendimento, durata, obbiettivo, LocalDate.now());
-//    	Portfolio result=new Portfolio();
-//    	for(Investment i : optimalPortfolio.getInvestments()) {
-//    		int k=0;
-//    		for(k=0; k<result.getInvestments().size(); k++) {
-//    			if(result.getInvestments().get(k).getBond().equals(i.getBond())) {
-//    				break;
-//    			}
-//    		}
-//    		if(k==result.getInvestments().size()) {
-//    			result.addInvestment(i);
-//    		}
-//    		else {
-//    			result.getInvestments().get(k).setAmount(result.getInvestments().get(k).getAmount()+i.getAmount());
-//    		}
-//    	}
     	this.txtResult.clear();
-    	this.txtResult.setText("Il portafoglio ottimo relativo ai dati input dell'utente a termine periodo ha un valore pari a "+(int)(optimalPortfolio.getTotEarning(durata)+budget)+".");
+    	if(optimalPortfolio.getInvestments().isEmpty()) {
+    		this.txtResult.setText("Non esiste un portafoglio ottimo in base ai dati inseriti dall'utente.");
+    	}
+    	else {
+        	this.txtResult.setText("Il portafoglio ottimo, calcolato in relazione ai dati inseriti dall'utente, ha un valore pari a "+(int)(optimalPortfolio.getTotEarning(durata)+budget)+"€ alla fine del periodo.");
+    	}
+    	
+    	//change GUI 
+    	this.txtLabel.setVisible(true);
+    	this.btnPortfolio.setVisible(true);
+    	this.txtResultComposition.setVisible(true);
+    	this.pieChartType.setVisible(true);
+    	this.pieChartRating.setVisible(true);
+    	this.cmbDate.setVisible(true);
     	this.cmbDate.getItems().clear();
     	this.cmbDate.getItems().addAll(model.getDates(durata));
-//    	for(Investment i : result.getInvestments()) {
-//    		this.txtResult.appendText(i.toString()+"\n");
-//    	}
-//    	this.txtResult.appendText("Liquidità: "+(budget-result.getTotAmountInvested(LocalDate.now()))+"\n");
-//		this.txtResult.appendText("Resa nel periodo: "+result.getTotEarning(durata));
-//		//Pie Chart type
-//		List<StatisticType> ltemp=model.getPieChartType(budget);
-//		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-//		for(StatisticType l : ltemp) {
-//			pieChartData.add(new PieChart.Data(l.getType(), l.getAmount()));
-//		}
-//		this.pieChartType.setData(pieChartData);
-//		
-//		//Pie Chart rating
-//		List<StatisticRating> rtemp=model.getPieChartRating(budget);
-//		ObservableList<PieChart.Data> pieChartDataRating = FXCollections.observableArrayList();
-//		for(StatisticRating r : rtemp) {
-//			pieChartDataRating.add(new PieChart.Data(r.getRating(), r.getAmount()));
-//		}
-//		this.pieChartRating.setData(pieChartDataRating);
+    	
     }
     
     @FXML
     void doPortfolio(ActionEvent event) {
     	
+    	//cmbDate
+    	if(this.cmbDate.getValue()==null) {
+    		this.txtResultComposition.clear();
+    		this.txtResultComposition.setText("Errore: selezionare una data nella combo box per la visualizzazione della composizione del portafoglio.");
+    		return;
+    	}
+    	
+    	LocalDate l=this.cmbDate.getValue();
+    	this.txtResultComposition.clear();
+    	String s=model.getPortfolioComposition(l);
+    	if(s.isEmpty()) {
+    		txtResultComposition.setText("Non sono presenti titoli in portafoglio nella data selezionata.");
+    	}
+    	else {
+    		this.txtResultComposition.setText("La composizione del portafoglio ottimo in data "+l+" è la seguente:\n");
+        	this.txtResultComposition.appendText(s);
+    	}
+    	
+    	//Pie Chart type
+    	double budget=Double.parseDouble(this.txtBudget.getText().trim());
+    	List<StatisticType> ltemp=model.getPieChartType(budget, l);
+		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+		for(StatisticType st : ltemp) {
+			pieChartData.add(new PieChart.Data(st.getType(), st.getAmount()));
+		}
+		this.pieChartType.setData(pieChartData);
+		
+		//Pie Chart rating
+		List<StatisticRating> rtemp=model.getPieChartRating(budget, l);
+		ObservableList<PieChart.Data> pieChartDataRating = FXCollections.observableArrayList();
+		for(StatisticRating r : rtemp) {
+			pieChartDataRating.add(new PieChart.Data(r.getRating(), r.getAmount()));
+		}
+		this.pieChartRating.setData(pieChartDataRating);
 
     }
     
@@ -211,6 +225,7 @@ public class FinancialPortfolioController {
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert cmbDate != null : "fx:id=\"cmbdate\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert btnPortfolio != null : "fx:id=\"btnPortfolio\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
+        assert txtLabel != null : "fx:id=\"txtLabel\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert txtResultComposition != null : "fx:id=\"txtResultComposition\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert pieChartType != null : "fx:id=\"pieChartType\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";
         assert pieChartRating != null : "fx:id=\"pieChartRating\" was not injected: check your FXML file 'FinancialPortfolio.fxml'.";

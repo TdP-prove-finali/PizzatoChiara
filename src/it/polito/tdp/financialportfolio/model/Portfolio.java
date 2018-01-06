@@ -40,7 +40,8 @@ public class Portfolio {
 		float earning=0;
 		for(Investment i : investments) {
 			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(i.getDate().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
-//			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*durata+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
+//			System.out.print("CALCOLO "+i.getBond().getMaturity()+" "+i.getAmount()+" "+i.getDate()+i.getBond().getPrice()+" "+i.getBond().getCoupon()+"\n");
+//			System.out.print("CALCOLO EARNING "+(i.getAmount()*(i.getBond().getCoupon()/100)*(i.getDate().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365))+"\n");
 		}
 		return earning;
 	}

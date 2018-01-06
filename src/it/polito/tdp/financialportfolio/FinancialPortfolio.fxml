@@ -31,7 +31,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Label text="La simulazione considera un pagamento cedole mensile investendo liquidità residua e cedole maturate in nuovi titoli mensilmente.">
+            <Label text="La simulazione considera un pagamento cedolare mensile, investendo ogni mese la liquidità residua e le cedole maturate in nuovi titoli.">
                <font>
                   <Font size="14.0" />
                </font>
@@ -92,47 +92,38 @@
                   </Button>
                </children>
             </HBox>
-            <TextArea fx:id="txtResult" prefHeight="39.0" prefWidth="1020.0">
+            <TextArea fx:id="txtResult" editable="false" prefHeight="39.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextArea>
             <HBox spacing="10.0">
                <children>
-                  <Label text="Selezionare una data per visualizzare la composizione del portafoglio">
+                  <Label fx:id="txtLabel" text="Selezionare una data per visualizzare la relativa composizione del portafoglio:" visible="false">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="cmbDate" />
+                  <ComboBox fx:id="cmbDate" visible="false" />
                </children>
             </HBox>
             <HBox alignment="TOP_RIGHT">
                <children>
-                  <Button fx:id="btnPortfolio" mnemonicParsing="false" onAction="#doPortfolio" text="Composizione portafoglio">
+                  <Button fx:id="btnPortfolio" mnemonicParsing="false" onAction="#doPortfolio" text="Visualizza portafoglio" visible="false">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
-            <HBox>
+            <HBox spacing="10.0">
                <children>
-                  <VBox>
-                     <children>
-                        <TextArea fx:id="txtResultComposition" />
-                     </children>
-                  </VBox>
-                  <VBox>
-                     <children>
-                        <PieChart fx:id="pieChartType" maxHeight="200.0" maxWidth="200.0" />
-                     </children>
-                  </VBox>
-                  <VBox>
-                     <children>
-                        <PieChart fx:id="pieChartRating" maxHeight="200.0" maxWidth="200.0" />
-                     </children>
-                  </VBox>
+                  <TextArea fx:id="txtResultComposition" editable="false" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font></TextArea>
+                  <PieChart fx:id="pieChartType" legendSide="RIGHT" maxHeight="200.0" maxWidth="200.0" visible="false" />
+                  <PieChart fx:id="pieChartRating" legendSide="RIGHT" maxHeight="200.0" maxWidth="200.0" visible="false" />
                </children>
             </HBox>
          </children>
