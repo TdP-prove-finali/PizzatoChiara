@@ -38,11 +38,14 @@ public class Portfolio {
 	
 	public float getTotEarning(int durata) {
 		float earning=0;
+		float temp=0;
 		for(Investment i : investments) {
 			earning+=i.getAmount()*(i.getBond().getCoupon()/100)*(i.getDate().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365)+(i.getAmount()*(1-(i.getBond().getPrice()/100)));
+			temp+=1;
 //			System.out.print("CALCOLO "+i.getBond().getMaturity()+" "+i.getAmount()+" "+i.getDate()+i.getBond().getPrice()+" "+i.getBond().getCoupon()+"\n");
 //			System.out.print("CALCOLO EARNING "+(i.getAmount()*(i.getBond().getCoupon()/100)*(i.getDate().until(i.getBond().getMaturity(),ChronoUnit.DAYS)/365))+"\n");
 		}
+		System.out.print("EARNING RITORNO "+earning+" "+temp+"\n");
 		return earning;
 	}
 	
@@ -73,7 +76,6 @@ public class Portfolio {
 	}
 	
 	public int getTotRisk() {
-		//TODO trovare modo per calcolare correttamente il rischio ipotizzando coefficiente di correlazione pari a zero
 		int risk=0;
 		for(Investment i : investments) {
 			risk+=(i.getAmount()/1000)*(20-i.getBond().getMoodys_rating());

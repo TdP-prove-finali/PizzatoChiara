@@ -160,6 +160,9 @@ public class FinancialPortfolioController {
     	this.cmbDate.setVisible(true);
     	this.cmbDate.getItems().clear();
     	this.cmbDate.getItems().addAll(model.getDates(durata));
+    	this.txtResultComposition.clear();
+    	this.pieChartType.getData().clear();
+    	this.pieChartRating.getData().clear();
     	
     }
     
@@ -175,6 +178,8 @@ public class FinancialPortfolioController {
     	
     	LocalDate l=this.cmbDate.getValue();
     	this.txtResultComposition.clear();
+    	this.pieChartType.getData().clear();
+    	this.pieChartRating.getData().clear();
     	String s=model.getPortfolioComposition(l);
     	if(s.isEmpty()) {
     		txtResultComposition.setText("Non sono presenti titoli in portafoglio nella data selezionata.");

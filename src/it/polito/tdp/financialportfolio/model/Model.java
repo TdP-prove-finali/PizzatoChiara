@@ -14,17 +14,19 @@ public class Model {
 	private List<Bond> bonds;
 	private FinancialPortfolioDAO fpdao;
 	private double MIN_INVESTMENT_AMOUNT;
-	private final static double MAX_SINGLE_INVESTMENT = 0.5;
+	private final static double MAX_SINGLE_INVESTMENT = 1;
 	private final static double MIN_SINGLE_INVESTMENT = 0.25;
 	private int codiceInvestment;
 	private Portfolio optimalSolution;
 	private Portfolio optimalSolutionPlus;
 	private double liquidity;
+	private double budgetiniziale;
 	
 	public Model() {
 		fpdao=new FinancialPortfolioDAO();
 		codiceInvestment=1;
 		liquidity=0;
+		budgetiniziale=0;
 	}
 	
 	public List<String> getRatings(){
@@ -156,13 +158,12 @@ public class Model {
 			return optimalSolution;
 		}
 		Portfolio partialSolution=new Portfolio();
-//		System.out.print("ENTRO nel for con taglio minimo "+MIN_INVESTMENT_AMOUNT+" "+budget+"\n");
+		System.out.print("ENTRO nel for con taglio minimo "+MIN_INVESTMENT_AMOUNT+" "+budget+"\n");
 		for(Bond b : this.getBonds()) {
-			//TODO check YEARS
 			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getMoodys_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
 				Investment itemp=new Investment(codiceInvestment++,b,MIN_INVESTMENT_AMOUNT, data);
 				partialSolution.addInvestment(itemp);
-//				System.out.print("PRIMA DI REcursive "+budget+" "+partialSolution.getTotAmountInvested(data)+" "+itemp.getAmount()+" "+itemp.getBond().getMaturity()+"\n");
+				System.out.print("PRIMA DI REcursive "+budget+" "+partialSolution.getTotAmountInvested(data)+" "+itemp.getAmount()+" "+itemp.getBond().getMaturity()+"\n");
 				recursive(1, partialSolution, budget, minRating, rendimento, durata, obbiettivo, data);
 				partialSolution.removeInvestment(itemp);
 			}
@@ -176,8 +177,8 @@ public class Model {
 	}
 	
 	public Portfolio searchPortfolioPlus(double budget, int minRating, float rendimento, int durata, String obbiettivo, LocalDate data) {
+		budgetiniziale=budget;
 		this.optimalSolutionPlus= new Portfolio();
-		Portfolio portfoliotemp=new Portfolio();
 		//chiamo prima searchPortfolio con cui popolo la optimalSolutionPlus 
 		this.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo, data);
 		for(Investment i : optimalSolution.getInvestments()) {
@@ -194,17 +195,6 @@ public class Model {
     			optimalSolutionPlus.getInvestments().get(k).setAmount(optimalSolutionPlus.getInvestments().get(k).getAmount()+i.getAmount());
     		}
     	}
-		//quindi cerco le nuove liquidità che si creano
-//		for(Investment itemp : optimalSolutionPlus.getInvestments()) {
-//			double amount=itemp.getAmount()+itemp.getAmount()*(itemp.getBond().getCoupon()/100)*(itemp.getDate().until(itemp.getBond().getMaturity(),ChronoUnit.DAYS)/365);
-//			LocalDate d=itemp.getBond().getMaturity().plusDays(1);
-//			int duration=(int) (durata-(data.until(d, ChronoUnit.DAYS))/365);
-//			//richiamo serchPortfolio su di esse 
-//			this.searchPortfolio(amount, minRating, rendimento, duration, obbiettivo, d);
-//			for(Investment i : optimalSolution.getInvestments()) {
-//				portfoliotemp.addInvestment(i);
-//			}
-//		}
 		LocalDate l;
 //		System.out.print("PRIMA "+optimalSolutionPlus.getTotAmountInvested(data.plusMonths(1))+"\n");
 		for(l=data.plusMonths(1); l.isBefore(data.plusYears(durata)); l=l.plusMonths(1)) {
@@ -223,7 +213,7 @@ public class Model {
 					}
 				}
 			}
-			System.out.print("CICLO in PortfolioPlus da investire: "+amount+" "+l+"\n");
+//			System.out.print("CICLO in PortfolioPlus da investire: "+amount+" "+l+"\n");
 			if(amount>=1000) {
 				int duration=(int) (durata-(data.until(l, ChronoUnit.DAYS))/365);
 				//richiamo serchPortfolio su di esse 
@@ -236,30 +226,13 @@ public class Model {
 				liquidity=amount;
 			}
 		}
-		//sommando i risultati a optimalSolutionPlus
-//		for(Investment i : portfoliotemp.getInvestments()) {
-//    		int k=0;
-//    		for(k=0; k<optimalSolutionPlus.getInvestments().size(); k++) {
-//    			if(optimalSolutionPlus.getInvestments().get(k).getBond().equals(i.getBond()) && optimalSolutionPlus.getInvestments().get(k).getDate().isEqual(i.getDate())) {
-//    				break;
-//    			}
-//    		}
-//    		if(k==optimalSolutionPlus.getInvestments().size()) {
-//    			optimalSolutionPlus.addInvestment(i);
-//    		}
-//    		else {
-//    			optimalSolutionPlus.getInvestments().get(k).setAmount(optimalSolutionPlus.getInvestments().get(k).getAmount()+i.getAmount());
-//    		}
-//    	}
-		//limito il ciclo a 1
 		return optimalSolutionPlus;	
 	}
 	
 	public void recursive(int step, Portfolio partialSolution, double budget, int minRating, float rendimento, int durata, String obbiettivo, LocalDate data) {
 //		System.out.print("Recursive "+step+"\n");
-//		if(budget-partialSolution.getTotAmountInvested()<MIN_INVESTMENT_AMOUNT) {
-		if(budget-partialSolution.getTotAmountInvested(data)<1000) {
-			System.out.print("Recursive "+step+"\n");
+		if(budget-partialSolution.getTotAmountInvested(data)<MIN_INVESTMENT_AMOUNT) {
+//		System.out.print("ENTRO IN RECURSIVE "+budget+" "+partialSolution.getTotAmountInvested(data)+"\n");
 			if(obbiettivo.equals("massimizzare il ricavo")) {
 				if(partialSolution.getTotEarning(durata)>optimalSolution.getTotEarning(durata)) {
 					optimalSolution.clearPortfolio();
@@ -288,13 +261,8 @@ public class Model {
 		for(Bond b : this.getBonds()) {
 			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getMoodys_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
 				Investment itemp;
-//				if(budget-partialSolution.getTotAmountInvested(data)<MIN_INVESTMENT_AMOUNT) {
-//					itemp=new Investment(codiceInvestment++,b,(int)(budget-partialSolution.getTotAmountInvested(data)-Math.floorMod((int) (budget-partialSolution.getTotAmountInvested(data)),1000)), data);
-//				}
-//				else {
-//					itemp=new Investment(codiceInvestment++,b,MIN_INVESTMENT_AMOUNT, data);
-//				}
-				if((partialSolution.getTotAmountBond(b, data)+MIN_INVESTMENT_AMOUNT)*(b.getPrice()/100)<=MAX_SINGLE_INVESTMENT*budget && budget-partialSolution.getTotAmountInvested(data)>=(b.getPrice()/100)*MIN_INVESTMENT_AMOUNT) {
+//				if((partialSolution.getTotAmountBond(b, data)+MIN_INVESTMENT_AMOUNT)*(b.getPrice()/100)<=MAX_SINGLE_INVESTMENT*budget && budget-partialSolution.getTotAmountInvested(data)>=(b.getPrice()/100)*MIN_INVESTMENT_AMOUNT) {
+				if(((partialSolution.getTotAmountBond(b, data)+MIN_INVESTMENT_AMOUNT)*(b.getPrice()/100)+optimalSolutionPlus.getTotAmountBond(b, data))<=MAX_SINGLE_INVESTMENT*budgetiniziale && budget-partialSolution.getTotAmountInvested(data)>=(b.getPrice()/100)*MIN_INVESTMENT_AMOUNT) {
 					itemp=new Investment(codiceInvestment++,b,MIN_INVESTMENT_AMOUNT, data);
 					partialSolution.addInvestment(itemp);
 					recursive(step+1, partialSolution, budget, minRating, rendimento, durata, obbiettivo, data);
