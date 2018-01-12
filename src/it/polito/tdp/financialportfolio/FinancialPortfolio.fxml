@@ -122,8 +122,8 @@
                      <font>
                         <Font size="14.0" />
                      </font></TextArea>
-                  <PieChart fx:id="pieChartType" legendSide="RIGHT" maxHeight="200.0" maxWidth="200.0" visible="false" />
-                  <PieChart fx:id="pieChartRating" legendSide="RIGHT" maxHeight="200.0" maxWidth="200.0" visible="false" />
+                  <PieChart fx:id="pieChartType" legendSide="RIGHT" maxHeight="250.0" maxWidth="250.0" visible="false" />
+                  <PieChart fx:id="pieChartRating" legendSide="RIGHT" maxHeight="250.0" maxWidth="250.0" visible="false" />
                </children>
             </HBox>
          </children>
