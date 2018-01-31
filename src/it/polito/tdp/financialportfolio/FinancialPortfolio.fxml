@@ -31,7 +31,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Label text="La simulazione considera un pagamento cedolare mensile, investendo ogni mese la liquidità residua e le cedole maturate in nuovi titoli.">
+            <Label text="La simulazione considera un pagamento cedolare semestrale, investendo ogni semestre la liquidità residua e le cedole maturate in nuovi titoli.">
                <font>
                   <Font size="14.0" />
                </font>

@@ -73,7 +73,7 @@ public class Portfolio {
 	public int getTotRisk() {
 		int risk=0;
 		for(Investment i : investments) {
-			risk+=(i.getAmount()/1000)*(20-i.getBond().getMoodys_rating());
+			risk+=(i.getAmount()/1000)*(20-i.getBond().getSp_rating());
 		}
 		return risk;
 	}

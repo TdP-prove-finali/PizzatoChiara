@@ -197,6 +197,7 @@ public class FinancialPortfolioController {
 			pieChartData.add(new PieChart.Data(st.getType(), st.getAmount()));
 		}
 		this.pieChartType.setData(pieChartData);
+		this.pieChartType.setLegendVisible(true);
 		
 		//Pie Chart rating
 		List<StatisticRating> rtemp=model.getPieChartRating(budget, l);

@@ -12,9 +12,10 @@ public class Model {
 	
 	private List<String> ratings;
 	private List<Bond> bonds;
+	private LocalDate dateBonds;
 	private FinancialPortfolioDAO fpdao;
 	private double MIN_INVESTMENT_AMOUNT;
-	private final static double MAX_SINGLE_INVESTMENT = 1;
+	private final static double MAX_SINGLE_INVESTMENT = 0.5;
 	private final static double MIN_SINGLE_INVESTMENT = 0.25;
 	private int codiceInvestment;
 	private Portfolio optimalSolution;
@@ -114,12 +115,12 @@ public class Model {
     	}
 		for(Investment i : res) {
 			for(k=0; k<result.size(); k++) {
-				if(result.get(k).getRating().equals(this.getRatingOfValue(i.getBond().getMoodys_rating()))) {
+				if(result.get(k).getRating().equals(this.getRatingOfValue(i.getBond().getSp_rating()))) {
 					break;
 				}
 			}
 			if(k==result.size()) {
-				StatisticRating stemp=new StatisticRating(this.getRatingOfValue(i.getBond().getMoodys_rating()),i.getBond().getPrice()*i.getAmount());
+				StatisticRating stemp=new StatisticRating(this.getRatingOfValue(i.getBond().getSp_rating()),i.getBond().getPrice()*i.getAmount());
 				result.add(stemp);
 			}
 			else {
@@ -129,9 +130,17 @@ public class Model {
 		return result;	
 	}
 	
-	public List<Bond> getBonds(){
+	public List<Bond> getBonds(int sp_rating_value, LocalDate maturity, LocalDate today){
 		if(bonds==null) {
-			bonds=fpdao.listBonds();
+			bonds=fpdao.listBonds(sp_rating_value, maturity, today);
+			dateBonds=today;
+		}
+		else {
+			if(!dateBonds.equals(today)) {
+				bonds.clear();
+				bonds=fpdao.listBonds(sp_rating_value, maturity, today);
+				dateBonds=today;
+			}
 		}
 		return bonds;
 	}
@@ -149,7 +158,7 @@ public class Model {
 			MIN_INVESTMENT_AMOUNT=((int)(MIN_SINGLE_INVESTMENT*budget/1000))*1000;
 		}
 		else {
-			MIN_INVESTMENT_AMOUNT=1000;
+			MIN_INVESTMENT_AMOUNT=5000;
 		}
 		optimalSolution=new Portfolio();
 		liquidity=0;
@@ -158,8 +167,8 @@ public class Model {
 			return optimalSolution;
 		}
 		Portfolio partialSolution=new Portfolio();
-		for(Bond b : this.getBonds()) {
-			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getMoodys_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
+		for(Bond b : this.getBonds(minRating, LocalDate.now().plusYears(durata), data)) {
+			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getSp_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
 				Investment itemp=new Investment(codiceInvestment++,b,MIN_INVESTMENT_AMOUNT, data);
 				partialSolution.addInvestment(itemp);
 				recursive(1, partialSolution, budget, minRating, rendimento, durata, obbiettivo, data);
@@ -174,6 +183,10 @@ public class Model {
 	}
 	
 	public Portfolio searchPortfolioPlus(double budget, int minRating, float rendimento, int durata, String obbiettivo, LocalDate data) {
+		if(bonds!=null) {
+			bonds.clear();
+		}
+		dateBonds=LocalDate.now().minusYears(1);
 		budgetiniziale=budget;
 		this.optimalSolutionPlus= new Portfolio();
 		this.searchPortfolio(budget, minRating, rendimento, durata, obbiettivo, data);
@@ -192,15 +205,15 @@ public class Model {
     		}
     	}
 		LocalDate l;
-		for(l=data.plusMonths(1); l.isBefore(data.plusYears(durata)); l=l.plusMonths(1)) {
+		for(l=data.plusMonths(6); l.isBefore(data.plusYears(durata)); l=l.plusMonths(6)) {
 			double amount=liquidity;
 			for(Investment itemp : optimalSolutionPlus.getInvestments()) {
-				if(itemp.getBond().getMaturity().isAfter(l.minusMonths(1)) && itemp.getBond().getMaturity().isBefore(l)) {
-					amount+=itemp.getAmount()+itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(1)).until(itemp.getBond().getMaturity(),ChronoUnit.DAYS))/365;
+				if(itemp.getBond().getMaturity().isAfter(l.minusMonths(6)) && itemp.getBond().getMaturity().isBefore(l)) {
+					amount+=itemp.getAmount()+itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(6)).until(itemp.getBond().getMaturity(),ChronoUnit.DAYS))/365;
 				}
 				else {
 					if(itemp.getBond().getMaturity().isAfter(l)) {
-						amount+=itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(1)).until(l,ChronoUnit.DAYS))/365;
+						amount+=itemp.getAmount()*(itemp.getBond().getCoupon()/100)*((l.minusMonths(6)).until(l,ChronoUnit.DAYS))/365;
 					}
 				}
 			}
@@ -244,8 +257,8 @@ public class Model {
 			}
 			return;
 		}
-		for(Bond b : this.getBonds()) {
-			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getMoodys_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
+		for(Bond b : this.getBonds(minRating, LocalDate.now().plusYears(durata), data)) {
+			if(data.until(b.getMaturity(),ChronoUnit.YEARS)>0 && data.until(b.getMaturity(),ChronoUnit.YEARS)<=durata && b.getSp_rating()>=minRating && (b.getPrice()/100)*MIN_INVESTMENT_AMOUNT<=budget) {
 				Investment itemp;
 				if(((partialSolution.getTotAmountBond(b, data)+MIN_INVESTMENT_AMOUNT)*(b.getPrice()/100)+optimalSolutionPlus.getTotAmountBond(b, data))<=MAX_SINGLE_INVESTMENT*budgetiniziale && budget-partialSolution.getTotAmountInvested(data)>=(b.getPrice()/100)*MIN_INVESTMENT_AMOUNT) {
 					itemp=new Investment(codiceInvestment++,b,MIN_INVESTMENT_AMOUNT, data);
