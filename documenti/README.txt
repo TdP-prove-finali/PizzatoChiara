@@ -1,4 +1,4 @@
-Ottimizzazione del portafoglio finanziario
+OTTIMIZZAZIONE DEL PORTAFOGLIO FINANZIARIO 
 
 Istruzioni per l'installazione e l'utilizzo dell'applicazione.
 
