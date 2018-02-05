@@ -149,20 +149,19 @@ public class FinancialPortfolioController {
     	}
     	else {
         	this.txtResult.setText("Il portafoglio ottimo, calcolato in relazione ai dati inseriti dall'utente, ha un valore pari a "+(int)(optimalPortfolio.getTotEarning(durata)+budget)+"€ alla fine del periodo.");
+        	//change GUI 
+        	this.txtLabel.setVisible(true);
+        	this.btnPortfolio.setVisible(true);
+        	this.txtResultComposition.setVisible(true);
+        	this.pieChartType.setVisible(true);
+        	this.pieChartRating.setVisible(true);
+        	this.cmbDate.setVisible(true);
+        	this.cmbDate.getItems().clear();
+        	this.cmbDate.getItems().addAll(model.getDates(durata));
+        	this.txtResultComposition.clear();
+        	this.pieChartType.getData().clear();
+        	this.pieChartRating.getData().clear();
     	}
-    	
-    	//change GUI 
-    	this.txtLabel.setVisible(true);
-    	this.btnPortfolio.setVisible(true);
-    	this.txtResultComposition.setVisible(true);
-    	this.pieChartType.setVisible(true);
-    	this.pieChartRating.setVisible(true);
-    	this.cmbDate.setVisible(true);
-    	this.cmbDate.getItems().clear();
-    	this.cmbDate.getItems().addAll(model.getDates(durata));
-    	this.txtResultComposition.clear();
-    	this.pieChartType.getData().clear();
-    	this.pieChartRating.getData().clear();
     	
     }
     

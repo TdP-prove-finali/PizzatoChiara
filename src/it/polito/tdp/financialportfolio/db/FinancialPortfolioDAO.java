@@ -14,7 +14,7 @@ import it.polito.tdp.financialportfolio.model.Bond;
 public class FinancialPortfolioDAO {
 	
 	public List<String> listRatings(){
-		String sql="SELECT DISTINCT rating FROM sp_rating ";
+		String sql="SELECT DISTINCT rating FROM sp_rating ORDER BY value DESC ";
 		List<String> result=new ArrayList<>();
 		Connection conn=DBConnect.getConnection();
 		try{
