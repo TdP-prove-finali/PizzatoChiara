@@ -1217,15 +1217,9 @@ INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `co
 INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
 	('BTP 01/11/2023 9%', 'IT0000366655', 'No', 'Govt', 9.000, '2023-11-01', 'BBB-', 146.260, 3.538);
 INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
-	('OBBL.BCA COMMERCIALE ITAL.97/27 0 COUPON', 'IT0000966017', 'No', 'Corp', 7.679, '2027-01-08', 'BBB', 44.892, 9.498);
-INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
 	('BTP 01/11/2026 7,25%', 'IT0001086567', 'No', 'Govt', 7.250, '2026-11-01', 'BBB-', 146.952, 3.154);
 INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
-	('OBBL.IS.S.PAOLO TO-OB 0 COUPON 97/22 115', 'IT0001086658', 'No', 'Corp', 7.290, '2022-01-30', 'BBB', 40.335, 18.073);
-INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
 	('BTP 01/11/2027 6,5%', 'IT0001174611', 'No', 'Govt', 6.500, '2027-11-01', 'BBB-', 142.882, 3.012);
-INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
-	('OBBL.BCA COMMERCIALE ITAL.98/28 0 COUPON', 'IT0001200390', 'No', 'Corp', 5.754, '2028-02-17', 'BBB', 44.357, 7.402);
 INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES
 	('BTP STRIP 01/11/2018', 'IT0001247227', 'No', 'Govt', 4.807, '2018-11-01', 'BBB-', 65.268, 2.831);
 INSERT INTO `bond` (`issuer_name`, `symbol`, `callable`, `sub_product_type`, `coupon`, `maturity`, `sp_rating`, `price`, `yield`) VALUES

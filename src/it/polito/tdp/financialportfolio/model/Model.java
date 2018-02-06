@@ -65,7 +65,7 @@ public class Model {
     			}
     		}
     		if(k==res.size()) {
-    			res.add(i);
+    			res.add(new Investment(this.codiceInvestment++, i.getBond(),i.getAmount(), i.getDate()));
     		}
     		else {
     			res.get(k).setAmount(res.get(k).getAmount()+i.getAmount());
@@ -107,7 +107,7 @@ public class Model {
     			}
     		}
     		if(k==res.size()) {
-    			res.add(i);
+    			res.add(new Investment(this.codiceInvestment++, i.getBond(),i.getAmount(), i.getDate()));
     		}
     		else {
     			res.get(k).setAmount(res.get(k).getAmount()+i.getAmount());
@@ -271,6 +271,10 @@ public class Model {
 	}
 	
 	public String getPortfolioComposition(LocalDate l) {
+//		System.out.print("STAMPA\n");
+//		for(Investment ii: optimalSolutionPlus.getInvestments()) {
+//			System.out.print(ii.getBond()+" "+ii.getAmount()+" "+ii.getDate()+"\n");
+//		}
 		String result="";
 		List<Investment> res=new LinkedList<>();
 		List<Investment> ptemp=new LinkedList<>();
@@ -281,19 +285,34 @@ public class Model {
 				ptemp.add(optimalSolutionPlus.getInvestments().get(k));
 			}
 		}
+		System.out.print("STAMPA INPUT\n");
+		for(Investment ii: optimalSolutionPlus.getInvestments()) {
+			System.out.print(ii.getBond()+" "+ii.getAmount()+" "+ii.getDate()+"\n");
+		}
+//		System.out.print("STAMPA PTEMP");
+//		for(Investment ii: ptemp) {
+//			System.out.print(ii.getBond()+" "+ii.getAmount()+" "+ii.getDate()+"\n");
+//		}
 		//aggregate Investment with the same date and on the same bond
     	for(Investment i : ptemp) {
+//    		System.out.print("ciclo "+i.getBond()+" "+i.getAmount()+" "+i.getDate()+"\n");
     		for(k=0; k<res.size(); k++) {
     			if(res.get(k).getBond().equals(i.getBond()) && res.get(k).getDate().equals(i.getDate()) && !(res.get(k).equals(i))) {
     				break;
     			}
     		}
     		if(k==res.size()) {
-    			res.add(i);
+//    			System.out.print("AGGIUNGO NON PRESENTE "+i.getBond()+" "+i.getAmount()+"\n");
+    			res.add(new Investment(this.codiceInvestment++, i.getBond(),i.getAmount(), i.getDate()));
     		}
     		else {
+//    			System.out.print("AGGIUNGO GIà PRESENTE "+i.getBond()+" "+i.getAmount()+"\n");
     			res.get(k).setAmount(res.get(k).getAmount()+i.getAmount());
     		}
+//    		System.out.print("STAMPA INTERMEDIA\n");
+//    		for(Investment ii: optimalSolutionPlus.getInvestments()) {
+//    			System.out.print(ii.getBond()+" "+ii.getAmount()+" "+ii.getDate()+"\n");
+//    		}
     	}		
 		//order list for date
 		Collections.sort(res, new Comparator<Investment>(){
@@ -303,6 +322,10 @@ public class Model {
 		});
 		for(Investment i : res) {
 			result+=i+"\n";
+		}
+		System.out.print("STAMPA\n");
+		for(Investment ii: optimalSolutionPlus.getInvestments()) {
+			System.out.print(ii.getBond()+" "+ii.getAmount()+" "+ii.getDate()+"\n");
 		}
 		return result;
 	}
